@@ -33,12 +33,6 @@ def resource_path(relative_path):
 
 class InstagramAgent:
     def __init__(self, email, password):
-        # self.browser = webdriver.Chrome(os.getcwd() + '/chromedriver.exe')
-        '''if getattr(sys, 'frozen', False):
-            chromedriver_path = os.path.join(sys._MEIPASS, "chromedriver.exe")
-        else:
-            chromedriver_path = 'chromedriver.exe'''''
-
         self.browser = webdriver.Chrome('chromedriver.exe')
         self.email = email
         self.password = password
@@ -143,25 +137,25 @@ def main():
         user_label = Label(root, textvariable=current_user, font=main_font)
         user_label.place(relheight=0.1, relwidth=0.6, relx=0.03, rely=0.3)
 
-        next_button = Button(root, text='Next user',
-                             command=lambda: next_user(index, current_user, usernames, agent, labels))
-        next_button.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.8)
+        # next_button = Button(root, text='Next user',
+        #                     command=lambda: next_user(index, current_user, usernames, agent, labels))
+        # next_button.place(relheight=0.1, relwidth=0.4, relx=0.3, rely=0.8)
 
-        next_button = Button(root, text='Normal user',
-                             command=lambda: label_user(current_user, labels, NORMAL_USER))
-        next_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.2)
+        normal_button = Button(root, text='Normal user',
+                             command=lambda: label_user(current_user, labels, NORMAL_USER, index, usernames, agent))
+        normal_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.2)
 
-        next_button = Button(root, text='Potential spammer',
-                             command=lambda: label_user(current_user, labels, SPAMMER))
-        next_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.35)
+        spammer_button = Button(root, text='Potential spammer',
+                             command=lambda: label_user(current_user, labels, SPAMMER, index, usernames, agent))
+        spammer_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.35)
 
-        next_button = Button(root, text='Media person',
-                             command=lambda: label_user(current_user, labels, MEDIA_USER))
-        next_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.5)
+        media_button = Button(root, text='Media person',
+                             command=lambda: label_user(current_user, labels, MEDIA_USER, index, usernames, agent))
+        media_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.5)
 
-        next_button = Button(root, text='Business account',
-                             command=lambda: label_user(current_user, labels, BUSINESS_ACCOUNT))
-        next_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.65)
+        business_button = Button(root, text='Business account',
+                             command=lambda: label_user(current_user, labels, BUSINESS_ACCOUNT, index, usernames, agent))
+        business_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.65)
 
         root.mainloop()
     except Exception as e:
@@ -171,9 +165,19 @@ def main():
             json.dump(labels, file, indent=4)
 
 
-def label_user(current_user: StringVar, labels: dict, label: str):
+def label_user(current_user: StringVar, labels: dict, label: str, index: list, usernames: list, agent: InstagramAgent):
+
     if current_user.get() not in labels.keys():
         labels[current_user.get()] = label
+        if current_user.get() in labels:
+            if index[0] + 1 < len(usernames):
+                index[0] += 1
+                current_user.set(usernames[index[0]])
+                agent.open_profile(usernames[index[0]])
+            else:
+                messagebox.showinfo("No more users :)", "You can close the app")
+        else:
+            messagebox.showerror("This user was not labeled", "Please classify him")
 
 
 def next_user(index: list, current_user: StringVar, usernames: list, agent: InstagramAgent, labels: dict):
