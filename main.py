@@ -21,6 +21,7 @@ NORMAL_USER = 'NORMAL'
 MEDIA_USER = 'MEDIA'
 BUSINESS_ACCOUNT = 'BUSINESS'
 SPAMMER = 'SPAMMER'
+FAKE = 'FAKE'
 
 
 def resource_path(relative_path):
@@ -156,6 +157,10 @@ def main():
         business_button = Button(root, text='Business account',
                              command=lambda: label_user(current_user, labels, BUSINESS_ACCOUNT, index, usernames, agent))
         business_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.65)
+
+        business_button = Button(root, text='Fake account',
+                             command=lambda: label_user(current_user, labels, FAKE, index, usernames, agent))
+        business_button.place(relheight=0.1, relwidth=0.3, relx=0.65, rely=0.8)
 
         root.mainloop()
     except Exception as e:
